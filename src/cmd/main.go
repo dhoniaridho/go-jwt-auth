@@ -1,8 +1,8 @@
 package main
 
 import (
-	"api/internal/apps/todos"
-	"api/internal/apps/users"
+	"api/src/internal/apps/todos"
+	"api/src/internal/apps/users"
 
 	"github.com/gin-gonic/gin"
 )
