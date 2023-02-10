@@ -32,7 +32,7 @@ A step by step series of examples that tell you how to get a development environ
 3. Build the project:
 
     ```bash
-    go build
+    go build -o dist ./src/cmd/main.go
     ```
 
 4. Run the project:
