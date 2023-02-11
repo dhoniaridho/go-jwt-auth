@@ -35,7 +35,7 @@ func (UserService) GetOne(id string) (User, error) {
 	return user, err
 }
 
-func (UserService) CreateOne(user *UserDto) (*UserDto, error) {
+func (UserService) CreateOne(user *CreateUserDto) (*CreateUserDto, error) {
 
 	db := database.GetDb()
 
@@ -54,4 +54,60 @@ func (UserService) CreateOne(user *UserDto) (*UserDto, error) {
 	})
 
 	return user, nil
+}
+
+func (UserService) UpdateOne(id int, payload *UpdateUserDto) (*UpdateUserDto, error) {
+	db := database.GetDb()
+
+	user := User{
+		ID: id,
+	}
+
+	err := db.First(&user).Error
+
+	if user.Password != "" {
+		password := []byte(user.Password)
+
+		hashedPassword, err := bcrypt.GenerateFromPassword(password, bcrypt.DefaultCost)
+
+		if err != nil {
+			return payload, err
+		}
+
+		user.Password = string(hashedPassword)
+
+	}
+
+	if err != nil {
+		return nil, err
+
+	}
+
+	user.Name = payload.Name
+	user.Email = payload.Email
+
+	savingErr := db.Save(&user).Error
+
+	if savingErr != nil {
+		return payload, savingErr
+	}
+
+	return payload, nil
+
+}
+
+func (UserService) DeleteOne(id int) (User, error) {
+	db := database.GetDb()
+	user := User{
+		ID: id,
+	}
+
+	deleteError := db.Delete(&user).Error
+
+	if deleteError != nil {
+		return user, deleteError
+	}
+
+	return user, nil
+
 }

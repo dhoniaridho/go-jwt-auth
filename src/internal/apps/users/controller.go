@@ -1,7 +1,6 @@
 package users
 
 import (
-	"api/src/database"
 	"strconv"
 	"strings"
 
@@ -52,7 +51,7 @@ func (s *Controller) Show(ctx *gin.Context) {
 
 func (s *Controller) Create(ctx *gin.Context) {
 
-	var user UserDto
+	var user CreateUserDto
 
 	if err := ctx.ShouldBind(&user); err != nil {
 		ctx.JSON(400, gin.H{
@@ -62,7 +61,7 @@ func (s *Controller) Create(ctx *gin.Context) {
 		return
 	}
 
-	s.UserService.CreateOne(&UserDto{
+	s.UserService.CreateOne(&CreateUserDto{
 		Name:     user.Name,
 		Email:    user.Email,
 		Password: user.Password,
@@ -84,8 +83,8 @@ func (s *Controller) Create(ctx *gin.Context) {
 }
 
 func (c *Controller) Delete(ctx *gin.Context) {
+
 	idStr := ctx.Param("id")
-	db := database.GetDb()
 
 	id, err := strconv.Atoi(idStr)
 
@@ -94,20 +93,56 @@ func (c *Controller) Delete(ctx *gin.Context) {
 		return
 	}
 
-	user := User{
-		ID: id,
-	}
-
-	deleteError := db.Delete(&user).Error
-
-	if deleteError != nil {
-		ctx.JSON(400, gin.H{
-			"message": deleteError,
-		})
-	}
+	c.UserService.DeleteOne(id)
 
 	ctx.JSON(200, gin.H{
 		"message": "Successfully deleted",
 		"data":    nil,
 	})
+}
+
+func (c *Controller) Update(ctx *gin.Context) {
+
+	var user UpdateUserDto
+
+	idStr := ctx.Param("id")
+
+	if err := ctx.ShouldBind(&user); err != nil {
+		ctx.JSON(400, gin.H{
+			"message": strings.Split(err.Error(), "\n"),
+			"status":  400,
+		})
+		return
+	}
+
+	id, err := strconv.Atoi(idStr)
+
+	if err != nil {
+		ctx.JSON(400, gin.H{
+			"message": "Invalid Id",
+			"status":  400,
+		})
+		return
+	}
+
+	updated, updateErr := c.UserService.UpdateOne(id, &UpdateUserDto{
+		Name:     user.Name,
+		Email:    user.Email,
+		Password: user.Password,
+	})
+
+	if updateErr != nil {
+		ctx.JSON(400, gin.H{
+			"message": updateErr,
+			"status":  400,
+		})
+		return
+	}
+
+	ctx.JSON(200, gin.H{
+		"message": "Success",
+		"status":  200,
+		"data":    updated,
+	})
+
 }
