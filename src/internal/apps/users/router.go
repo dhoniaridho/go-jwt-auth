@@ -8,6 +8,8 @@ func SetupRoutes(r *gin.RouterGroup) *gin.RouterGroup {
 
 	r.GET("/", c.Index)
 	r.GET("/:id", c.Show)
+	r.DELETE("/:id", c.Delete)
+	r.POST("create", c.Create)
 
 	return r
 }

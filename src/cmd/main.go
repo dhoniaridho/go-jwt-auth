@@ -36,6 +36,8 @@ func main() {
 
 	database.Init()
 
+	database.GetDb().AutoMigrate(&users.User{})
+
 	r.Run()
 
 }

@@ -16,6 +16,10 @@ func Init() {
 		panic(err)
 	}
 
+	if database == nil {
+		panic("database is nil")
+	}
+
 	db = database
 
 }

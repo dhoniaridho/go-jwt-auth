@@ -3,6 +3,7 @@ package users
 import (
 	"api/src/database"
 
+	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
 
@@ -21,8 +22,6 @@ func (s UserService) GetAll() []User {
 
 func (UserService) GetOne(id string) (User, error) {
 
-	// user := User{Name: "dhoniaridho", ID: 1}
-
 	db := database.GetDb()
 
 	var user User
@@ -34,4 +33,25 @@ func (UserService) GetOne(id string) (User, error) {
 	}
 
 	return user, err
+}
+
+func (UserService) CreateOne(user *UserDto) (*UserDto, error) {
+
+	db := database.GetDb()
+
+	password := []byte(user.Password)
+
+	hashedPassword, err := bcrypt.GenerateFromPassword(password, bcrypt.DefaultCost)
+
+	if err != nil {
+		return user, err
+	}
+
+	db.Create(&User{
+		Name:     user.Name,
+		Email:    user.Email,
+		Password: string(hashedPassword),
+	})
+
+	return user, nil
 }
