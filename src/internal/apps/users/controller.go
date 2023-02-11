@@ -3,12 +3,12 @@ package users
 import "github.com/gin-gonic/gin"
 
 type Controller struct {
-	Service
+	UserService
 }
 
-func (this *Controller) Index(ctx *gin.Context) {
+func (s *Controller) Index(ctx *gin.Context) {
 
-	data := this.Service.GetAll()
+	data := s.UserService.GetAll()
 
 	ctx.JSON(
 		200,
@@ -20,11 +20,19 @@ func (this *Controller) Index(ctx *gin.Context) {
 
 }
 
-func (this *Controller) Show(ctx *gin.Context) {
+func (s *Controller) Show(ctx *gin.Context) {
 
 	id := ctx.Param("id")
 
-	data := this.Service.GetOne(id)
+	data, err := s.UserService.GetOne(id)
+
+	if err != nil {
+		ctx.JSON(404, gin.H{
+			"message": err.Error(),
+			"status":  404,
+		})
+		return
+	}
 
 	ctx.JSON(
 		200,

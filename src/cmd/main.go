@@ -1,6 +1,7 @@
 package main
 
 import (
+	"api/src/database"
 	"api/src/internal/apps/todos"
 	"api/src/internal/apps/users"
 
@@ -32,6 +33,8 @@ func main() {
 		currentRoute := r.Group(route.URL)
 		route.Setup(currentRoute)
 	}
+
+	database.Init()
 
 	r.Run()
 
