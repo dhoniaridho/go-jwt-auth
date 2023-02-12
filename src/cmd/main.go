@@ -2,12 +2,12 @@ package main
 
 import (
 	"api/src/config/database"
-	internal "api/src/internal/apps"
 	"api/src/internal/apps/users"
 
-	_ "github.com/joho/godotenv/autoload"
+	internal "api/src/internal/apps"
 
 	"github.com/gin-gonic/gin"
+	_ "github.com/joho/godotenv/autoload"
 )
 
 func main() {
@@ -18,8 +18,8 @@ func main() {
 
 	database.Init()
 
-	r.Run()
-
 	database.GetDb().AutoMigrate(&users.User{})
+
+	r.Run()
 
 }

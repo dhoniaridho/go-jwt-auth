@@ -5,6 +5,8 @@ import (
 
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
+
+	"github.com/jaevor/go-nanoid"
 )
 
 type UserService struct{}
@@ -26,7 +28,7 @@ func (UserService) GetOne(id string) (User, error) {
 
 	var user User
 
-	err := db.Where("id = ?", id).First(&user).Error
+	err := db.Where("Uid = ?", id).First(&user).Error
 
 	if err == gorm.ErrRecordNotFound {
 		return User{}, err
@@ -50,32 +52,42 @@ func (UserService) FindOneByEmail(email string) (User, error) {
 	return user, err
 }
 
-func (UserService) CreateOne(user *CreateUserDto) (*CreateUserDto, error) {
+func (UserService) CreateOne(user *CreateUserDto) (*User, error) {
 
 	db := database.GetDb()
 
 	password := []byte(user.Password)
+	id, _ := nanoid.Standard(21)
+
+	idUser := id()
 
 	hashedPassword, err := bcrypt.GenerateFromPassword(password, bcrypt.DefaultCost)
 
 	if err != nil {
-		return user, err
+		return &User{
+			Uid:   idUser,
+			Name:  user.Name,
+			Email: user.Email,
+		}, err
 	}
 
-	db.Create(&User{
+	u := &User{
+		Uid:      idUser,
 		Name:     user.Name,
 		Email:    user.Email,
 		Password: string(hashedPassword),
-	})
+	}
 
-	return user, nil
+	db.Create(u)
+
+	return u, nil
 }
 
-func (UserService) UpdateOne(id int, payload *UpdateUserDto) (*UpdateUserDto, error) {
+func (UserService) UpdateOne(id string, payload *UpdateUserDto) (*UpdateUserDto, error) {
 	db := database.GetDb()
 
 	user := User{
-		ID: id,
+		Uid: id,
 	}
 
 	err := db.First(&user).Error
@@ -111,10 +123,10 @@ func (UserService) UpdateOne(id int, payload *UpdateUserDto) (*UpdateUserDto, er
 
 }
 
-func (UserService) DeleteOne(id int) (User, error) {
+func (UserService) DeleteOne(id string) (User, error) {
 	db := database.GetDb()
 	user := User{
-		ID: id,
+		Uid: id,
 	}
 
 	deleteError := db.Delete(&user).Error

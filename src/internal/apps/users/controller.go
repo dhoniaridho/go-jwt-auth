@@ -1,7 +1,6 @@
 package users
 
 import (
-	"strconv"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -86,14 +85,7 @@ func (c *Controller) Delete(ctx *gin.Context) {
 
 	idStr := ctx.Param("id")
 
-	id, err := strconv.Atoi(idStr)
-
-	if err != nil {
-		ctx.String(400, "Invalid ID")
-		return
-	}
-
-	c.userService.DeleteOne(id)
+	c.userService.DeleteOne(idStr)
 
 	ctx.JSON(200, gin.H{
 		"message": "Successfully deleted",
@@ -115,17 +107,7 @@ func (c *Controller) Update(ctx *gin.Context) {
 		return
 	}
 
-	id, err := strconv.Atoi(idStr)
-
-	if err != nil {
-		ctx.JSON(400, gin.H{
-			"message": "Invalid Id",
-			"status":  400,
-		})
-		return
-	}
-
-	updated, updateErr := c.userService.UpdateOne(id, &UpdateUserDto{
+	updated, updateErr := c.userService.UpdateOne(idStr, &UpdateUserDto{
 		Name:     user.Name,
 		Email:    user.Email,
 		Password: user.Password,

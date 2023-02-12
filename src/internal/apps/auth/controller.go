@@ -22,7 +22,7 @@ func (c *Controller) Login(ctx *gin.Context) {
 		return
 	}
 
-	token, err := c.authService.SignIn(&cridential)
+	data, err := c.authService.SignIn(&cridential)
 
 	if err != nil {
 		ctx.JSON(401, gin.H{
@@ -34,12 +34,37 @@ func (c *Controller) Login(ctx *gin.Context) {
 
 	ctx.JSON(201, gin.H{
 		"message": "Authentication successful",
-		"data": gin.H{
-			"token": token,
-		},
+		"data":    data,
 	})
 }
 
 func (c *Controller) Register(ctx *gin.Context) {
+	var payload RegisterDto
+
+	if err := ctx.ShouldBind(&payload); err != nil {
+		ctx.JSON(400, gin.H{
+			"message": strings.Split(err.Error(), "\n"),
+			"status":  400,
+		})
+		return
+	}
+
+	token, registerErr := c.authService.Register(&payload)
+
+	if registerErr != nil {
+		ctx.JSON(401, gin.H{
+			"message": "Unauthorized",
+			"status":  401,
+		})
+		return
+	}
+
+	ctx.JSON(201, gin.H{
+		"message": "Authentication successful",
+		"data": gin.H{
+			"token": token,
+			"user":  payload,
+		},
+	})
 
 }
