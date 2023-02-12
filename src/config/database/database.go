@@ -1,7 +1,7 @@
 package database
 
 import (
-	env "api/src/config"
+	"api/src/config/env"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"

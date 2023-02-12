@@ -1,7 +1,7 @@
 package users
 
 import (
-	"api/src/database"
+	"api/src/config/database"
 
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"

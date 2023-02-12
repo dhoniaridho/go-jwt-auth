@@ -1,7 +1,7 @@
 package auth
 
 import (
-	env "api/src/config"
+	"api/src/config/env"
 	"api/src/internal/apps/users"
 	"errors"
 	"time"
