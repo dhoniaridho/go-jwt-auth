@@ -1,4 +1,4 @@
-# Simple Api with Go Language
+# Simple API with Go Language
 
 A brief description of your project and its purpose.
 
@@ -7,38 +7,41 @@ A brief description of your project and its purpose.
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
 ### Prerequisites
-
-What things you need to install the software and how to install them:
+What things do you need to install the software and how to install them:
 
 - Go version 1.15 or higher
 - Any other dependencies required for your project (e.g. database, third-party libraries, etc.)
 
 ### Installing
-
-A step by step series of examples that tell you how to get a development environment running:
+A step-by-step series of examples that tell you how to get a development environment running:
 
 1. Clone the repository:
 
     ```bash
-    git clone https://github.com/your-username/project-name.git
+    git clone https://github.com/dhoniaridho/project-name.git
     ```
 
-2. Install dependencies:
+2. Copy environment variables:
 
     ```bash
-    go mod download
+        cp .env.example .env
+    ```
+3. Install dependencies:
+
+    ```bash
+        make install
     ```
 
-3. Build the project:
+4. Build the project:
 
     ```bash
-    go build -o dist ./src/cmd/main.go
+        make build
     ```
 
-4. Run the project:
+5. Run the project:
 
     ```bash
-    go run ./src/cmd/main.go
+        make
     ```
 
 ## Usage
@@ -57,7 +60,7 @@ Instructions for deploying the project in a live environment.
 ## Built With
 
 - [Go](https://golang.org/) - The programming language used
-- [Gin Gonic](https://gin-gonic.com/) - Http server framework for go
+- [Gin Gonic](https://gin-gonic.com/) - HTTP server framework for go
 
 ## Contributing
 
