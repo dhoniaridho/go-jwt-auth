@@ -8,12 +8,12 @@ import (
 )
 
 type Controller struct {
-	UserService
+	userService UserService
 }
 
 func (s *Controller) Index(ctx *gin.Context) {
 
-	data := s.UserService.GetAll()
+	data := s.userService.GetAll()
 
 	ctx.JSON(
 		200,
@@ -29,7 +29,7 @@ func (s *Controller) Show(ctx *gin.Context) {
 
 	id := ctx.Param("id")
 
-	data, err := s.UserService.GetOne(id)
+	data, err := s.userService.GetOne(id)
 
 	if err != nil {
 		ctx.JSON(404, gin.H{
@@ -61,7 +61,7 @@ func (s *Controller) Create(ctx *gin.Context) {
 		return
 	}
 
-	s.UserService.CreateOne(&CreateUserDto{
+	s.userService.CreateOne(&CreateUserDto{
 		Name:     user.Name,
 		Email:    user.Email,
 		Password: user.Password,
@@ -93,7 +93,7 @@ func (c *Controller) Delete(ctx *gin.Context) {
 		return
 	}
 
-	c.UserService.DeleteOne(id)
+	c.userService.DeleteOne(id)
 
 	ctx.JSON(200, gin.H{
 		"message": "Successfully deleted",
@@ -125,7 +125,7 @@ func (c *Controller) Update(ctx *gin.Context) {
 		return
 	}
 
-	updated, updateErr := c.UserService.UpdateOne(id, &UpdateUserDto{
+	updated, updateErr := c.userService.UpdateOne(id, &UpdateUserDto{
 		Name:     user.Name,
 		Email:    user.Email,
 		Password: user.Password,

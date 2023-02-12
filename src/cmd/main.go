@@ -2,6 +2,7 @@ package main
 
 import (
 	"api/src/database"
+	"api/src/internal/apps/auth"
 	"api/src/internal/apps/todos"
 	"api/src/internal/apps/users"
 
@@ -25,6 +26,10 @@ func main() {
 		{
 			URL:   "todos",
 			Setup: todos.SetupRoutes,
+		},
+		{
+			URL:   "auth",
+			Setup: auth.SetupRoutes,
 		},
 	}
 

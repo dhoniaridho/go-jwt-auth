@@ -35,6 +35,21 @@ func (UserService) GetOne(id string) (User, error) {
 	return user, err
 }
 
+func (UserService) FindOneByEmail(email string) (User, error) {
+
+	db := database.GetDb()
+
+	var user User
+
+	err := db.Where("email = ?", email).First(&user).Error
+
+	if err == gorm.ErrRecordNotFound {
+		return User{}, err
+	}
+
+	return user, err
+}
+
 func (UserService) CreateOne(user *CreateUserDto) (*CreateUserDto, error) {
 
 	db := database.GetDb()
