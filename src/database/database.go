@@ -1,26 +1,26 @@
 package database
 
 import (
+	env "api/src/config"
+
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
 var db *gorm.DB
 
-func Init() {
+func Init() error {
 
-	dsn := "root:root@tcp(127.0.0.1:3306)/golang?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := env.Get("DB_MYSQL_CONNECTION")
 	database, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
 	if err != nil {
-		panic(err)
-	}
-
-	if database == nil {
-		panic("database is nil")
+		panic("Connection to database failed")
 	}
 
 	db = database
+
+	return err
 
 }
 

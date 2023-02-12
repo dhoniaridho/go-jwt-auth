@@ -6,6 +6,8 @@ import (
 	"api/src/internal/apps/todos"
 	"api/src/internal/apps/users"
 
+	_ "github.com/joho/godotenv/autoload"
+
 	"github.com/gin-gonic/gin"
 )
 

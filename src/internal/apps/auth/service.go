@@ -1,6 +1,7 @@
 package auth
 
 import (
+	env "api/src/config"
 	"api/src/internal/apps/users"
 	"errors"
 	"time"
@@ -32,7 +33,7 @@ func (s *AuthService) SignIn(payload *LoginDto) (string, error) {
 		"id":  user.ID,
 	})
 
-	secretKey := []byte("my-secret-key")
+	secretKey := []byte(env.Get("JWT_SECRET_KEY"))
 
 	tokenString, err := token.SignedString(secretKey)
 
