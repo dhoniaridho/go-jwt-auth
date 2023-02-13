@@ -1,6 +1,7 @@
 package users
 
 import (
+	"net/http"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -51,6 +52,7 @@ func (s *Controller) Show(ctx *gin.Context) {
 func (s *Controller) Create(ctx *gin.Context) {
 
 	var user CreateUserDto
+	var err error
 
 	if err := ctx.ShouldBind(&user); err != nil {
 		ctx.JSON(400, gin.H{
@@ -60,18 +62,26 @@ func (s *Controller) Create(ctx *gin.Context) {
 		return
 	}
 
-	s.userService.CreateOne(&CreateUserDto{
+	u, err := s.userService.CreateOne(&CreateUserDto{
 		Name:     user.Name,
 		Email:    user.Email,
 		Password: user.Password,
 	})
 
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"data":    nil,
+			"message": err.Error(),
+		})
+		return
+	}
+
 	newUser := struct {
 		Name  string
 		Email string
 	}{
-		Name:  user.Name,
-		Email: user.Email,
+		Name:  u.Name,
+		Email: u.Email,
 	}
 
 	ctx.JSON(201, gin.H{

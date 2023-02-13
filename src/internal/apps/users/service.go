@@ -2,6 +2,7 @@ package users
 
 import (
 	"api/src/config/database"
+	"errors"
 
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
@@ -58,6 +59,17 @@ func (UserService) CreateOne(user *CreateUserDto) (*User, error) {
 
 	password := []byte(user.Password)
 	id, _ := nanoid.Standard(21)
+
+	validateEmail := func(email string) bool {
+		var count int64
+		db.Model(&User{}).Where("email = ?", email).Count(&count)
+		return count == 0
+	}
+
+	// Validate the email address
+	if !validateEmail(user.Email) {
+		return &User{}, errors.New("email is not available")
+	}
 
 	idUser := id()
 

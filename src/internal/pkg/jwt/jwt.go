@@ -26,7 +26,6 @@ func ValidateToken(tokenString string) error {
 	})
 
 	if err != nil {
-		fmt.Println("failed to parse token:", err)
 		return err
 	}
 

@@ -2,7 +2,6 @@ package middlewares
 
 import (
 	"api/src/internal/pkg/jwt"
-	"fmt"
 	"net/http"
 	"strings"
 
@@ -20,8 +19,6 @@ func AuthenticatedGuard(ctx *gin.Context) {
 	token := strings.TrimPrefix(authHeader, "Bearer ")
 
 	err := jwt.ValidateToken(token)
-
-	fmt.Println(err)
 
 	if err != nil {
 		ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
