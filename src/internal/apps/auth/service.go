@@ -1,13 +1,11 @@
 package auth
 
 import (
-	"api/src/config/env"
 	"api/src/internal/apps/users"
+	"api/src/internal/pkg/jwt"
 	"errors"
-	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt/v4"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -33,27 +31,21 @@ func (s *AuthService) SignIn(payload *LoginDto) (gin.H, error) {
 		}, errors.New("password mismatch")
 	}
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"iss": "web",
-		"exp": time.Now().Add(time.Hour * 72).Unix(),
-		"sub": "web",
-		"id":  user.ID,
+	token, jwtErr := jwt.GenerateToken(jwt.Payload{
+		Uid: user.Uid,
 	})
 
-	secretKey := []byte(env.Get("JWT_SECRET_KEY"))
-
-	tokenString, err := token.SignedString(secretKey)
-
-	u := gin.H{
-		"token": tokenString,
-		"user":  user,
+	if jwtErr != nil {
+		return gin.H{}, jwtErr
 	}
 
 	if err != nil {
-		return gin.H{
-			"token": tokenString,
-			"user":  user,
-		}, err
+		return gin.H{}, err
+	}
+
+	u := gin.H{
+		"token": token,
+		"user":  user,
 	}
 
 	return u, err
@@ -71,23 +63,16 @@ func (s *AuthService) Register(payload *RegisterDto) (gin.H, error) {
 		return gin.H{}, err
 	}
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"iss": "web",
-		"exp": time.Now().Add(time.Hour * 72).Unix(),
-		"sub": "web",
-		"id":  user.Uid,
+	token, jwtErr := jwt.GenerateToken(jwt.Payload{
+		Uid: user.Uid,
 	})
 
-	secretKey := []byte(env.Get("JWT_SECRET_KEY"))
-
-	tokenString, jwtErr := token.SignedString(secretKey)
-
 	if jwtErr != nil {
-		return gin.H{"user": user}, err
+		return gin.H{}, jwtErr
 	}
 
 	return gin.H{
 		"user":  user,
-		"token": tokenString,
+		"token": token,
 	}, nil
 }

@@ -99,7 +99,7 @@ func (c *Controller) Update(ctx *gin.Context) {
 
 	idStr := ctx.Param("id")
 
-	if err := ctx.ShouldBind(&user); err != nil {
+	if err := ctx.BindJSON(&user); err != nil {
 		ctx.JSON(400, gin.H{
 			"message": strings.Split(err.Error(), "\n"),
 			"status":  400,

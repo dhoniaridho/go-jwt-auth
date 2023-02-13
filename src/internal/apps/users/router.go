@@ -1,10 +1,16 @@
 package users
 
-import "github.com/gin-gonic/gin"
+import (
+	"api/src/internal/middlewares"
+
+	"github.com/gin-gonic/gin"
+)
 
 func SetupRoutes(r *gin.RouterGroup) *gin.RouterGroup {
 
 	c := Controller{}
+
+	r.Use(middlewares.AuthenticatedGuard)
 
 	r.GET("/", c.Index)
 	r.GET("/:id", c.Show)
